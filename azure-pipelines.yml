@@ -1,0 +1,33 @@
+# Define que o pipeline será acionado em qualquer push na branch 'main'
+trigger:
+- main
+
+# Define que o pipeline rodará em uma máquina virtual (VM) 
+# gerenciada pela Microsoft com o Ubuntu mais recente.
+pool:
+  vmImage: 'ubuntu-latest'
+
+stages:
+- stage: Build
+  displayName: 'Build Stage'
+  jobs:
+  - job: BuildJob
+    displayName: 'Build Job'
+    pool:
+      vmImage: 'ubuntu-latest'
+
+    steps:
+    - task: NodeTool@0
+      inputs:
+        versionSpec: '18.x'
+      displayName: 'Install Node.js 18.x'
+
+    - script: |
+        npm install
+      displayName: 'Install Dependencies'
+    - script: |
+        npm run testd
+      displayName: ='Run Tests'
+    - script: |
+        npm run build
+      displayName: 'Build Application'
